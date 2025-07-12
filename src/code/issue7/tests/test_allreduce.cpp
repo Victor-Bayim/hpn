@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cstring>
 #include "allreduce.h"
+#include "allreduce_utils.h"
 
 int main(int argc, char *argv[]) {
     AllreduceConfig config;
