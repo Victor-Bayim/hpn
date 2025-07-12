@@ -1,5 +1,5 @@
 #include "allreduce.h"
-#include "allreduce_utils.cu"  // 引入辅助函数和宏
+#include "allreduce_utils.h"  // 引入辅助函数和宏
 #include "ibgda_detect.cu"     // 引入 IBGDA 检测函数
 
 // CUDA 内核：将源数组 `src[offset:offset+len]` 加到目标数组 `dest[offset:offset+len]`
@@ -61,9 +61,7 @@ int allreduce_sum_int(int *data, size_t count, AllreduceConfig *config) {
     int prev_pe = (mype - 1 + npes) % npes;
     int next_pe = (mype + 1) % npes;
 
-    // 分配对等通信的对称内存缓冲（用于接收数据块）
-    // 注意：data 指向的内存需通过 nvshmem_malloc 分配，此处假定 data 已是对称内存
-    static __shared__ int dummy; // 占位符，无需额外分配
+    // data 指向的内存需通过 nvshmem_malloc 分配，此处假定 data 已是对称内存
 
     // 进入 Scatter-Reduce 阶段：逐步累加来自其他进程的数据块
     for (int step = 0; step < npes - 1; ++step) {
